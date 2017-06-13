@@ -850,7 +850,7 @@ namespace GB
          */
         private static void Execute5(Core core)
         {
-            core.cpu.registerB = core.Unsbtub(core.cpu.registerB - 1);
+            core.cpu.registerB = Utils.Unsbtub(core.cpu.registerB - 1);
             core.cpu.flagZero = (core.cpu.registerB == 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerB & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -930,7 +930,7 @@ namespace GB
          */
         private static void Execute11(Core core)
         {
-            long temp_var = core.Unswtuw(((core.cpu.registerB << 8) + core.cpu.registerC) - 1);
+            long temp_var = Utils.Unswtuw(((core.cpu.registerB << 8) + core.cpu.registerC) - 1);
             core.cpu.registerB = (temp_var >> 8);
             core.cpu.registerC = (temp_var & 0xFF);
         }
@@ -957,7 +957,7 @@ namespace GB
          */
         private static void Execute13(Core core)
         {
-            core.cpu.registerC = core.Unsbtub(core.cpu.registerC - 1);
+            core.cpu.registerC = Utils.Unsbtub(core.cpu.registerC - 1);
             core.cpu.flagZero = (core.cpu.registerC == 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerC & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -1085,7 +1085,7 @@ namespace GB
          */
         private static void Execute21(Core core)
         {
-            core.cpu.registerD = core.Unsbtub(core.cpu.registerD - 1);
+            core.cpu.registerD = Utils.Unsbtub(core.cpu.registerD - 1);
             core.cpu.flagZero = (core.cpu.registerD == 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerD & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -1125,7 +1125,7 @@ namespace GB
          */
         private static void Execute24(Core core)
         {
-            core.cpu.programCounter = core.Nswtuw(core.cpu.programCounter + core.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
+            core.cpu.programCounter = Utils.Nswtuw(core.cpu.programCounter + Utils.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
         }
 
         /**
@@ -1163,7 +1163,7 @@ namespace GB
          */
         private static void Execute27(Core core)
         {
-            long temp_var = core.Unswtuw(((core.cpu.registerD << 8) + core.cpu.registerE) - 1);
+            long temp_var = Utils.Unswtuw(((core.cpu.registerD << 8) + core.cpu.registerE) - 1);
             core.cpu.registerD = (temp_var >> 8);
             core.cpu.registerE = (temp_var & 0xFF);
         }
@@ -1190,7 +1190,7 @@ namespace GB
          */
         private static void Execute29(Core core)
         {
-            core.cpu.registerE = core.Unsbtub(core.cpu.registerE - 1);
+            core.cpu.registerE = Utils.Unsbtub(core.cpu.registerE - 1);
             core.cpu.flagZero = (core.cpu.registerE == 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerE & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -1232,7 +1232,7 @@ namespace GB
         {
             if (!core.cpu.flagZero)
             {
-                core.cpu.programCounter = core.Nswtuw(core.cpu.programCounter + core.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
+                core.cpu.programCounter = Utils.Nswtuw(core.cpu.programCounter + Utils.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
                 ++core.CPUTicks;
             }
             else
@@ -1299,7 +1299,7 @@ namespace GB
          */
         private static void Execute37(Core core)
         {
-            long H = core.Unsbtub((core.cpu.registersHL >> 8) - 1);
+            long H = Utils.Unsbtub((core.cpu.registersHL >> 8) - 1);
             core.cpu.flagZero = (H == 0);
             core.cpu.flagHalfCarry = ((H & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -1350,7 +1350,7 @@ namespace GB
         {
             if (core.cpu.flagZero)
             {
-                core.cpu.programCounter = core.Nswtuw(core.cpu.programCounter + core.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
+                core.cpu.programCounter = Utils.Nswtuw(core.cpu.programCounter + Utils.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
                 ++core.CPUTicks;
             }
             else
@@ -1391,7 +1391,7 @@ namespace GB
          */
         private static void Execute43(Core core)
         {
-            core.cpu.registersHL = core.Unswtuw(core.cpu.registersHL - 1);
+            core.cpu.registersHL = Utils.Unswtuw(core.cpu.registersHL - 1);
         }
 
         /**
@@ -1417,7 +1417,7 @@ namespace GB
          */
         private static void Execute45(Core core)
         {
-            long L = core.Unsbtub((core.cpu.registersHL & 0xFF) - 1);
+            long L = Utils.Unsbtub((core.cpu.registersHL & 0xFF) - 1);
             core.cpu.flagZero = (L == 0);
             core.cpu.flagHalfCarry = ((L & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -1458,7 +1458,7 @@ namespace GB
         {
             if (!core.cpu.flagCarry)
             {
-                core.cpu.programCounter = core.Nswtuw(core.cpu.programCounter + core.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
+                core.cpu.programCounter = Utils.Nswtuw(core.cpu.programCounter + Utils.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
                 ++core.CPUTicks;
             }
             else
@@ -1488,7 +1488,7 @@ namespace GB
         private static void Execute50(Core core)
         {
             core.memory.Write(core.cpu.registersHL, core.cpu.registerA);
-            core.cpu.registersHL = core.Unswtuw(core.cpu.registersHL - 1);
+            core.cpu.registersHL = Utils.Unswtuw(core.cpu.registersHL - 1);
         }
 
         /**
@@ -1525,7 +1525,7 @@ namespace GB
          */
         private static void Execute53(Core core)
         {
-            long temp_var = core.Unsbtub(core.memory.Read(core.cpu.registersHL) - 1);
+            long temp_var = Utils.Unsbtub(core.memory.Read(core.cpu.registersHL) - 1);
             core.cpu.flagZero = (temp_var == 0);
             core.cpu.flagHalfCarry = ((temp_var & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -1566,7 +1566,7 @@ namespace GB
         {
             if (core.cpu.flagCarry)
             {
-                core.cpu.programCounter = core.Nswtuw(core.cpu.programCounter + core.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
+                core.cpu.programCounter = Utils.Nswtuw(core.cpu.programCounter + Utils.Usbtsb(core.memory.Read(core.cpu.programCounter)) + 1);
                 ++core.CPUTicks;
             }
             else
@@ -1599,7 +1599,7 @@ namespace GB
         private static void Execute58(Core core)
         {
             core.cpu.registerA = core.memory.Read(core.cpu.registersHL);
-            core.cpu.registersHL = core.Unswtuw(core.cpu.registersHL - 1);
+            core.cpu.registersHL = Utils.Unswtuw(core.cpu.registersHL - 1);
         }
 
         /**
@@ -1610,7 +1610,7 @@ namespace GB
          */
         private static void Execute59(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
         }
 
         /**
@@ -1635,7 +1635,7 @@ namespace GB
          */
         private static void Execute61(Core core)
         {
-            core.cpu.registerA = core.Unsbtub(core.cpu.registerA - 1);
+            core.cpu.registerA = Utils.Unsbtub(core.cpu.registerA - 1);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) == 0xF);
             core.cpu.flagSubtract = true;
@@ -2274,7 +2274,7 @@ namespace GB
                 /*VBA-M says this fixes Torpedo Range (Seems to work):
                 Involves an edge case where an EI is placed right before a HALT.
                 EI in this case actually is immediate, so we adjust (Hacky?).*/
-                core.cpu.programCounter = core.Nswtuw(core.cpu.programCounter - 1);
+                core.cpu.programCounter = Utils.Nswtuw(core.cpu.programCounter - 1);
             }
             else
             {
@@ -2678,7 +2678,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerB;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (core.cpu.registerB & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2694,7 +2694,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerC;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (core.cpu.registerC & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2710,7 +2710,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerD;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (core.cpu.registerD & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2726,7 +2726,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerE;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (core.cpu.registerE & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2743,7 +2743,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - temp_var;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (temp_var & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2759,7 +2759,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - (core.cpu.registersHL & 0xFF);
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (core.cpu.registersHL & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2776,7 +2776,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - temp_var;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (temp_var & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2806,7 +2806,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerB - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (core.cpu.registerB & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2822,7 +2822,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerC - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (core.cpu.registerC & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2838,7 +2838,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerD - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (core.cpu.registerD & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2854,7 +2854,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - core.cpu.registerE - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (core.cpu.registerE & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2871,7 +2871,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - temp_var - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (temp_var & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2887,7 +2887,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - (core.cpu.registersHL & 0xFF) - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (core.cpu.registersHL & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -2904,7 +2904,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - temp_var - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (temp_var & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
         }
@@ -3262,7 +3262,7 @@ namespace GB
         private static void Execute184(Core core)
         {
             long dirtySum = core.cpu.registerA - core.cpu.registerB;
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3277,7 +3277,7 @@ namespace GB
         private static void Execute185(Core core)
         {
             long dirtySum = core.cpu.registerA - core.cpu.registerC;
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3292,7 +3292,7 @@ namespace GB
         private static void Execute186(Core core)
         {
             long dirtySum = core.cpu.registerA - core.cpu.registerD;
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3307,7 +3307,7 @@ namespace GB
         private static void Execute187(Core core)
         {
             long dirtySum = core.cpu.registerA - core.cpu.registerE;
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3322,7 +3322,7 @@ namespace GB
         private static void Execute188(Core core)
         {
             long dirtySum = core.cpu.registerA - (core.cpu.registersHL >> 8);
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3337,7 +3337,7 @@ namespace GB
         private static void Execute189(Core core)
         {
             long dirtySum = core.cpu.registerA - (core.cpu.registersHL & 0xFF);
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3352,7 +3352,7 @@ namespace GB
         private static void Execute190(Core core)
         {
             long dirtySum = core.cpu.registerA - core.memory.Read(core.cpu.registersHL);
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.flagSubtract = true;
@@ -3441,9 +3441,9 @@ namespace GB
             {
                 long temp_pc = (core.memory.Read((core.cpu.programCounter + 1) & 0xFFFF) << 8) + core.memory.Read(core.cpu.programCounter);
                 core.cpu.programCounter = (core.cpu.programCounter + 2) & 0xFFFF;
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
                 core.cpu.programCounter = temp_pc;
                 core.CPUTicks += 3;
@@ -3462,9 +3462,9 @@ namespace GB
          */
         private static void Execute197(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registerB);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registerC);
         }
 
@@ -3493,9 +3493,9 @@ namespace GB
          */
         private static void Execute199(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0;
         }
@@ -3574,9 +3574,9 @@ namespace GB
             {
                 long temp_pc = (core.memory.Read((core.cpu.programCounter + 1) & 0xFFFF) << 8) + core.memory.Read(core.cpu.programCounter);
                 core.cpu.programCounter = (core.cpu.programCounter + 2) & 0xFFFF;
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
                 core.cpu.programCounter = temp_pc;
                 core.CPUTicks += 3;
@@ -3597,9 +3597,9 @@ namespace GB
         {
             long temp_pc = (core.memory.Read((core.cpu.programCounter + 1) & 0xFFFF) << 8) + core.memory.Read(core.cpu.programCounter);
             core.cpu.programCounter = (core.cpu.programCounter + 2) & 0xFFFF;
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = temp_pc;
         }
@@ -3630,9 +3630,9 @@ namespace GB
          */
         private static void Execute207(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x8;
         }
@@ -3710,9 +3710,9 @@ namespace GB
             {
                 long temp_pc = (core.memory.Read((core.cpu.programCounter + 1) & 0xFFFF) << 8) + core.memory.Read(core.cpu.programCounter);
                 core.cpu.programCounter = (core.cpu.programCounter + 2) & 0xFFFF;
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
                 core.cpu.programCounter = temp_pc;
                 core.CPUTicks += 3;
@@ -3731,9 +3731,9 @@ namespace GB
          */
         private static void Execute213(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registerD);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registerE);
         }
 
@@ -3749,7 +3749,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - temp_var;
             core.cpu.flagHalfCarry = (core.cpu.registerA & 0xF) < (temp_var & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.programCounter = (core.cpu.programCounter + 1) & 0xFFFF;
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
@@ -3763,9 +3763,9 @@ namespace GB
          */
         private static void Execute215(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x10;
         }
@@ -3827,7 +3827,7 @@ namespace GB
          */
         private static void Execute219(Core core)
         {
-            //echo 'Illegal op code 0xDB called, pausing emulation.';
+            //cout('Illegal op code 0xDB called, pausing emulation.';
             //exit();
         }
 
@@ -3843,9 +3843,9 @@ namespace GB
             {
                 long temp_pc = (core.memory.Read((core.cpu.programCounter + 1) & 0xFFFF) << 8) + core.memory.Read(core.cpu.programCounter);
                 core.cpu.programCounter = (core.cpu.programCounter + 2) & 0xFFFF;
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-                core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+                core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
                 core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
                 core.cpu.programCounter = temp_pc;
                 core.CPUTicks += 3;
@@ -3864,7 +3864,7 @@ namespace GB
          */
         private static void Execute221(Core core)
         {
-            //echo 'Illegal op code 0xDD called, pausing emulation.';
+            //cout('Illegal op code 0xDD called, pausing emulation.';
             //exit();
         }
 
@@ -3880,7 +3880,7 @@ namespace GB
             long dirtySum = core.cpu.registerA - temp_var - (long)((core.cpu.flagCarry) ? 1 : 0);
             core.cpu.flagHalfCarry = ((core.cpu.registerA & 0xF) - (temp_var & 0xF) - ((core.cpu.flagCarry) ? 1 : 0) < 0);
             core.cpu.flagCarry = (dirtySum < 0);
-            core.cpu.registerA = core.Unsbtub(dirtySum);
+            core.cpu.registerA = Utils.Unsbtub(dirtySum);
             core.cpu.programCounter = (core.cpu.programCounter + 1) & 0xFFFF;
             core.cpu.flagZero = (core.cpu.registerA == 0);
             core.cpu.flagSubtract = true;
@@ -3894,9 +3894,9 @@ namespace GB
          */
         private static void Execute223(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x18;
         }
@@ -3944,7 +3944,7 @@ namespace GB
          */
         private static void Execute227(Core core)
         {
-            //echo 'Illegal op code 0xE3 called, pausing emulation.';
+            //cout('Illegal op code 0xE3 called, pausing emulation.';
             //exit();
         }
 
@@ -3956,7 +3956,7 @@ namespace GB
          */
         private static void Execute228(Core core)
         {
-            //echo 'Illegal op code 0xE4 called, pausing emulation.';
+            //cout('Illegal op code 0xE4 called, pausing emulation.';
             //exit();
         }
 
@@ -3968,9 +3968,9 @@ namespace GB
          */
         private static void Execute229(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registersHL >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registersHL & 0xFF);
         }
 
@@ -3997,9 +3997,9 @@ namespace GB
          */
         private static void Execute231(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x20;
         }
@@ -4012,11 +4012,11 @@ namespace GB
          */
         private static void Execute232(Core core)
         {
-            long signedByte = core.Usbtsb(core.memory.Read(core.cpu.programCounter));
-            long temp_value = core.Nswtuw(core.cpu.stackPointer + signedByte);
-            core.cpu.flagCarry = (((core.cpu.stackPointer ^ signedByte ^ temp_value) & 0x100) == 0x100);
-            core.cpu.flagHalfCarry = (((core.cpu.stackPointer ^ signedByte ^ temp_value) & 0x10) == 0x10);
-            core.cpu.stackPointer = temp_value;
+            long signedByte = Utils.Usbtsb(core.memory.Read(core.cpu.programCounter));
+            long temp = Utils.Nswtuw(core.cpu.stackPointer + signedByte);
+            core.cpu.flagCarry = (((core.cpu.stackPointer ^ signedByte ^ temp) & 0x100) == 0x100);
+            core.cpu.flagHalfCarry = (((core.cpu.stackPointer ^ signedByte ^ temp) & 0x10) == 0x10);
+            core.cpu.stackPointer = temp;
             core.cpu.programCounter = (core.cpu.programCounter + 1) & 0xFFFF;
             core.cpu.flagZero = core.cpu.flagSubtract = false;
         }
@@ -4052,7 +4052,7 @@ namespace GB
          */
         private static void Execute235(Core core)
         {
-            //echo 'Illegal op code 0xEB called, pausing emulation.';
+            //cout('Illegal op code 0xEB called, pausing emulation.';
             //exit();
         }
 
@@ -4064,7 +4064,7 @@ namespace GB
          */
         private static void Execute236(Core core)
         {
-            //echo 'Illegal op code 0xEC called, pausing emulation.';
+            //cout('Illegal op code 0xEC called, pausing emulation.';
             //exit();
         }
 
@@ -4076,7 +4076,7 @@ namespace GB
          */
         private static void Execute237(Core core)
         {
-            //echo 'Illegal op code 0xED called, pausing emulation.';
+            //cout('Illegal op code 0xED called, pausing emulation.';
             //exit();
         }
 
@@ -4102,9 +4102,9 @@ namespace GB
          */
         private static void Execute239(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x28;
         }
@@ -4182,9 +4182,9 @@ namespace GB
          */
         private static void Execute245(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.registerA);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, (long)(((core.cpu.flagZero) ? 0x80 : 0) + ((core.cpu.flagSubtract) ? 0x40 : 0) + ((core.cpu.flagHalfCarry) ? 0x20 : 0) + ((core.cpu.flagCarry) ? 0x10 : 0)));
         }
 
@@ -4210,9 +4210,9 @@ namespace GB
          */
         private static void Execute247(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x30;
         }
@@ -4225,8 +4225,8 @@ namespace GB
          */
         private static void Execute248(Core core)
         {
-            long signedByte = core.Usbtsb(core.memory.Read(core.cpu.programCounter));
-            core.cpu.registersHL = core.Nswtuw(core.cpu.stackPointer + signedByte);
+            long signedByte = Utils.Usbtsb(core.memory.Read(core.cpu.programCounter));
+            core.cpu.registersHL = Utils.Nswtuw(core.cpu.stackPointer + signedByte);
             core.cpu.flagCarry = (((core.cpu.stackPointer ^ signedByte ^ core.cpu.registersHL) & 0x100) == 0x100);
             core.cpu.flagHalfCarry = (((core.cpu.stackPointer ^ signedByte ^ core.cpu.registersHL) & 0x10) == 0x10);
             core.cpu.programCounter = (core.cpu.programCounter + 1) & 0xFFFF;
@@ -4275,7 +4275,7 @@ namespace GB
          */
         private static void Execute252(Core core)
         {
-            //echo 'Illegal op code 0xFC called, pausing emulation.';
+            //cout('Illegal op code 0xFC called, pausing emulation.';
             //exit();
         }
 
@@ -4287,7 +4287,7 @@ namespace GB
          */
         private static void Execute253(Core core)
         {
-            //echo 'Illegal op code 0xFD called, pausing emulation.';
+            //cout('Illegal op code 0xFD called, pausing emulation.';
             //exit();
         }
 
@@ -4300,7 +4300,7 @@ namespace GB
         private static void Execute254(Core core)
         {
             long dirtySum = core.cpu.registerA - core.memory.Read(core.cpu.programCounter);
-            core.cpu.flagHalfCarry = (core.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
+            core.cpu.flagHalfCarry = (Utils.Unsbtub(dirtySum) & 0xF) > (core.cpu.registerA & 0xF);
             core.cpu.flagCarry = (dirtySum < 0);
             core.cpu.flagZero = (dirtySum == 0);
             core.cpu.programCounter = (core.cpu.programCounter + 1) & 0xFFFF;
@@ -4315,9 +4315,9 @@ namespace GB
          */
         private static void Execute255(Core core)
         {
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter >> 8);
-            core.cpu.stackPointer = core.Unswtuw(core.cpu.stackPointer - 1);
+            core.cpu.stackPointer = Utils.Unswtuw(core.cpu.stackPointer - 1);
             core.memory.Write(core.cpu.stackPointer, core.cpu.programCounter & 0xFF);
             core.cpu.programCounter = 0x38;
         }

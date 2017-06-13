@@ -133,6 +133,14 @@ namespace GB.Graphics
 
         public void InitScreen()
         {
+			if (core.cGBC)
+			{
+				tileCount *= 2;
+				tileCountInvalidator = tileCount * 4;
+				colorCount = 64;
+				transparentCutoff = 32;
+			}
+
             tileData = new TileData[tileCount * colorCount];
             for (int i = 0; i < tileData.Length; i++)
                 tileData[i] = new TileData();
@@ -174,6 +182,7 @@ namespace GB.Graphics
             long tileX = core.memory.memory[0xFF43] >> 3;
             long memStart = ((gfxBackgroundY) ? 0x1C00 : 0x1800) + ((sourceY & 0xF8) << 2);
             long screenX = -(core.memory.memory[0xFF43] & 7);
+
             for (; screenX < windowLeft; tileX++, screenX += 8)
             {
                 tileXCoord = (tileX & 0x1F);
@@ -355,9 +364,7 @@ namespace GB.Graphics
                                     DrawPartBgSprite((tileNum & -2) + (offset >> 3), spriteX, line, offset & 7, spriteAttrib);
                             }
                             else
-                            {
-                                DrawPartBgSprite(tileNum, spriteX, line, offset, spriteAttrib);
-                            }
+                                DrawPartBgSprite(tileNum, spriteX, line, offset, spriteAttrib);                            
                         }
                         else
                         {
@@ -370,9 +377,7 @@ namespace GB.Graphics
                                     DrawPartFgSprite((tileNum & -2) + (offset >> 3), spriteX, line, offset & 7, spriteAttrib);
                             }
                             else
-                            {
-                                DrawPartFgSprite(tileNum, spriteX, line, offset, spriteAttrib);
-                            }
+                                DrawPartFgSprite(tileNum, spriteX, line, offset, spriteAttrib);                            
                         }
                     }
                     else

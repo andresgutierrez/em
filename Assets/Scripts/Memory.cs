@@ -61,6 +61,12 @@ namespace GB
 
             MBCRam = new long[numRAMBanks * 0x2000];
             Debug.Log("MBC RAM allocated=" + MBCRam.Length);
+
+            if (core.cGBC)
+            {
+                core.VRAM = new long[0x2000];
+                GBCMemory = new long[0x7000];
+            }
         }
 
         public byte[] LoadROM()
@@ -529,20 +535,14 @@ namespace GB
                     memory[0xFF6A] = data;
                 }
                 else
-                {
                     memory[0xFF6A] = data;
-                }
             }
             else if (address == 0xFF6B)
             {
                 if (core.cGBC)
-                {
                     Debug.Log("not implemented");
-                }
                 else
-                {
                     memory[0xFF6B] = data;
-                }
             }
             else if (address == 0xFF6C)
             {
@@ -714,10 +714,8 @@ namespace GB
                         return memory[address]; //memoryReadNormal
                 }
             }
-            else
-            {
-                return 0xFF; //memoryReadBAD
-            }
+
+            return 0xFF; //memoryReadBAD
         }
     }
 }
