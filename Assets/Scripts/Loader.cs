@@ -27,7 +27,7 @@ namespace GB
 
         private void Start()
         {
-            Load("ST");
+            Load("CPU");
         }
 
         public void Load(string path)
