@@ -34,3 +34,4 @@ sysinfo.txt
 *.unitypackage
 
 Assets/Resources/*.bytes
+Assets/Resources/*.bytes.meta
