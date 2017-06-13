@@ -16,13 +16,14 @@ CPU instruction set accuracy test results (Blargg's cpu_instrs.gb test ROM):
 
 <img src="https://s23.postimg.org/uox8s2et7/Screen_Shot_2017-06-12_at_11.21.37_PM.png" width="200">
 
-## Todo
+## TODO
 
-[x] Support Game Boy Classic ROMs
-[X] Keyboard/Mobile Controls
-[ ] Support Game Boy Color ROMs 
-[ ] Sound
-[ ] Save/Restore state
+- [x] Support Game Boy Classic ROMs
+- [x] Keyboard/Mobile Controls
+- [ ] Support Game Boy Color ROMs
+- [ ] Improve UI
+- [ ] Sound
+- [ ] Save/Restore state
 
 ## Credits
 
