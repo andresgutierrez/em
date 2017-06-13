@@ -11,9 +11,13 @@ Only GameBoy ROMs are supported, GameBoy Color ROMs are work in progress.
 
 Unity 5.6+ is required to execute and generate builds of the emulator. iOS builds were using XCode 8.3.
 
+## Documentation
+
+You can find information about the many details and internals of Game Boy Development [here](https://github.com/avivace/awesome-gbdev).
+
 ## Tests
 
-CPU instruction set accuracy test results (Blargg's cpu_instrs.gb test ROM):
+CPU instruction set accuracy test results ([Blargg's cpu_instrs.gb](http://gbdev.gg8.se/files/roms/blargg-gb-tests/) test ROM):
 
 <img src="https://s23.postimg.org/uox8s2et7/Screen_Shot_2017-06-12_at_11.21.37_PM.png" width="200">
 
