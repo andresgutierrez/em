@@ -33,4 +33,4 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-#Assets/Resources/*.bytes
+Assets/Resources/*.bytes
