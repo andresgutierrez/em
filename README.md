@@ -1,14 +1,15 @@
 
 # Em
 
-![GB](https://thumbs.gfycat.com/WeirdHighKitty-size_restricted.gif)
+![GB1](https://thumbs.gfycat.com/PlainWellwornAffenpinscher-size_restricted.gif)
+![GB2](https://thumbs.gfycat.com/WeirdHighKitty-size_restricted.gif)
 
 Em is a GameBoy emulator written in Unity/C# for iPhone/iPad/Android. Other platforms should work fine as well.
 Only GameBoy ROMs are supported, GameBoy Color ROMs are work in progress.
 
 ## Requirements
 
-Unity 5.6+ is required to execute and generate builds of the emulator.
+Unity 5.6+ is required to execute and generate builds of the emulator. iOS builds were using XCode 8.3.
 
 ## Tests
 
@@ -29,3 +30,7 @@ CPU instruction set accuracy test results (Blargg's cpu_instrs.gb test ROM):
 
 Memory Management partially ported from GameBoyCore.
 Partially ported video, HDMA, and double speed mode procedure from the STOP opcode from MeBoy 2.2
+
+## License
+
+Em is open-source software released under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
