@@ -278,7 +278,7 @@ namespace GB.Graphics
             {
                 long num = weaveLookup[VRAMReadGFX(offset++, otherBank)] + (weaveLookup[this.VRAMReadGFX(offset++, otherBank)] << 1);
                 if (num != 0)
-                    transparent = false;                
+                    transparent = false;
 
                 for (int x = 8; --x >= 0;)
                 {
@@ -500,7 +500,7 @@ namespace GB.Graphics
         {
             if (!core.cGBC)
             {
-                gbPalette[startIndex]     = colors[data & 0x03] & 0x00FFFFFF; // color 0: transparent
+                gbPalette[startIndex] = colors[data & 0x03] & 0x00FFFFFF; // color 0: transparent
                 gbPalette[startIndex + 1] = colors[(data >> 2) & 0x03];
                 gbPalette[startIndex + 2] = colors[(data >> 4) & 0x03];
                 gbPalette[startIndex + 3] = colors[data >> 6];

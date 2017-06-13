@@ -163,7 +163,7 @@ namespace GB.Graphics
                         currentScanLine = ++core.memory.memory[0xFF44];
                         CheckIfLYCMatch();
                         if (core.LCDTicks >= 114)
-                            ScanLine(currentScanLine);                        
+                            ScanLine(currentScanLine);
                     }
                 }
                 else
@@ -203,7 +203,7 @@ namespace GB.Graphics
 
                 if (mode0TriggerSTAT || (mode2TriggerSTAT && STATTracker == 0))
                     memory.memory[0xFF0F] |= 0x2; // if STAT bit 3 . set IF bit1  
-                
+
                 NotifyScanline();
                 STATTracker = 2;
                 modeSTAT = 0;

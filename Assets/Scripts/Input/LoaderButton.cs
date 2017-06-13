@@ -8,9 +8,9 @@ namespace GB.Input
         [SerializeField]
         private string name;
 
-		public void OnPointerUp(PointerEventData eventData)
-		{
-            Loader.instance.Load(name);			
-		}
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            Loader.instance.Load(name);
+        }
     }
 }

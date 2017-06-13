@@ -34,8 +34,8 @@ namespace GB
         {
             if (core != null)
                 core.initialized = false;
-			core = new Core(Resources.Load(path) as TextAsset, drawer);
-			core.Start();
+            core = new Core(Resources.Load(path) as TextAsset, drawer);
+            core.Start();
         }
 
         private void Update()

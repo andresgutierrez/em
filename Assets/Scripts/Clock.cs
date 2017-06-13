@@ -73,7 +73,7 @@ namespace GB
                 }
 
                 if (Settings.autoFrameskip)
-                {                    
+                {
                     if (timeElapsed > Settings.loopInterval)
                     {
                         if (Settings.frameskipAmout < Settings.frameskipMax)
@@ -148,25 +148,25 @@ namespace GB
 
         public long GetTime(long currMBCRAMBank, long currMBCRAMBankPosition, long address)
         {
-			switch (currMBCRAMBank)
-			{
-				case 0x00:
-				case 0x01:
-				case 0x02:
-				case 0x03:
-					return core.memory.MBCRam[address + currMBCRAMBankPosition];
-				case 0x08:
-					return latchedSeconds;
-				case 0x09:
-					return latchedMinutes;
-				case 0x0A:
-					return latchedHours;
-				case 0x0B:
-					return latchedLDays;
-				case 0x0C:
-					return (((RTCDayOverFlow) ? 0x80 : 0) + ((RTCHALT) ? 0x40 : 0)) + latchedHDays;
-			}
+            switch (currMBCRAMBank)
+            {
+                case 0x00:
+                case 0x01:
+                case 0x02:
+                case 0x03:
+                    return core.memory.MBCRam[address + currMBCRAMBankPosition];
+                case 0x08:
+                    return latchedSeconds;
+                case 0x09:
+                    return latchedMinutes;
+                case 0x0A:
+                    return latchedHours;
+                case 0x0B:
+                    return latchedLDays;
+                case 0x0C:
+                    return (((RTCDayOverFlow) ? 0x80 : 0) + ((RTCHALT) ? 0x40 : 0)) + latchedHDays;
+            }
             return 0xFF; //memoryReadBAD
-		}
+        }
     }
 }

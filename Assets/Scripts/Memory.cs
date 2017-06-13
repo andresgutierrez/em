@@ -155,26 +155,26 @@ namespace GB
                     }
                 }
                 else if (core.cMBC2)
-                {					
-					if (address < 0x1000) // cMBC2 mode
-					{
-						//MBC RAM Bank Enable/Disable:
-						MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A); //If lower nibble is 0x0A, then enable, otherwise disable.
-					}
-					else if (address >= 0x2100 && address < 0x2200)
-					{						
-						ROMBank1offs = data & 0x0F;
-						SetCurrentMBC2AND3ROMBank();
-					}					
+                {
+                    if (address < 0x1000) // cMBC2 mode
+                    {
+                        //MBC RAM Bank Enable/Disable:
+                        MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A); //If lower nibble is 0x0A, then enable, otherwise disable.
+                    }
+                    else if (address >= 0x2100 && address < 0x2200)
+                    {
+                        ROMBank1offs = data & 0x0F;
+                        SetCurrentMBC2AND3ROMBank();
+                    }
                 }
                 else if (core.cMBC3)
                 {
                     if (address < 0x2000)
-                    {                        
+                    {
                         MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A); //If lower nibble is 0x0A, then enable, otherwise disable.
                     }
                     else if (address < 0x4000)
-                    {                        
+                    {
                         ROMBank1offs = data & 0x7F;
                         SetCurrentMBC2AND3ROMBank();
                     }
@@ -202,7 +202,7 @@ namespace GB
                 }
             }
             else if (address < 0xA000)
-            {                
+            {
                 //VRAM cannot be written to during mode 3
                 if (core.lcd.modeSTAT < 3)
                 {
@@ -256,7 +256,7 @@ namespace GB
                     memory[address] = data;
             }
             else if (address < 0xFF00)
-            {                
+            {
                 if (core.cGBC)
                     memory[address] = data; //memoryWriteNormal
             }
@@ -291,7 +291,7 @@ namespace GB
                 {
                     bool active = (data & 0x80) == 0x80;
                     if (active != core.lcd.LCDisOn)
-                    {                        
+                    {
                         core.lcd.LCDisOn = active;
                         memory[0xFF41] &= 0xF8;
                         core.lcd.STATTracker = core.lcd.modeSTAT = core.LCDTicks = core.lcd.currentScanLine = memory[0xFF44] = 0;
@@ -470,7 +470,7 @@ namespace GB
                     if (!core.hdmaRunning)
                     {
                         if ((data & 0x80) == 0)
-                        {                            
+                        {
                             Debug.Log("not implemented");
                         }
                         else
@@ -488,7 +488,7 @@ namespace GB
                         }
                     }
                     else if ((data & 0x80) == 0) //Stop H-Blank DMA
-					{                        
+                    {
                         core.hdmaRunning = false;
                         memory[0xFF55] |= 0x80;
                     }
@@ -513,7 +513,7 @@ namespace GB
             else if (address == 0xFF69)
             {
                 if (core.cGBC)
-                {                    
+                {
                     Debug.Log("not implemented");
                 }
                 else
@@ -536,7 +536,7 @@ namespace GB
             else if (address == 0xFF6B)
             {
                 if (core.cGBC)
-                {                    
+                {
                     Debug.Log("not implemented");
                 }
                 else
@@ -599,7 +599,7 @@ namespace GB
                 if ((numRAMBanks == 1 / 16 && address < 0xA200) || numRAMBanks >= 1)
                 {
                     if (!core.cMBC3)
-                    {                        
+                    {
                         if (MBCRAMBanksEnabled || Settings.overrideMBC)
                             return MBCRam[address + currMBCRAMBankPosition];
 
