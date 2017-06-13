@@ -1,6 +1,9 @@
 ﻿
+using System;
+
 namespace GB.Graphics
 {
+    [Serializable]
     public class TileData
     {
         public bool initialized;

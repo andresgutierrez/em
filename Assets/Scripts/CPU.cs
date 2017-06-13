@@ -1,8 +1,12 @@
 ﻿
+using System;
+
 namespace GB
 {
+    [Serializable]
     public class CPU
     {
+        [NonSerialized]
         private Core core;
 
         public long registerA;

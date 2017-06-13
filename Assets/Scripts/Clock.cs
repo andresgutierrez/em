@@ -1,10 +1,13 @@
 ﻿
+using System;
 using UnityEngine;
 
 namespace GB
 {
+    [Serializable]
     public class Clock
     {
+        [NonSerialized]
         private Core core;
 
         private bool RTCisLatched = true;

@@ -1,10 +1,15 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 namespace GB
 {
+    [Serializable]
     public class Memory
     {
+        [NonSerialized]
         private Core core;
 
         private byte[] rom;
@@ -716,6 +721,14 @@ namespace GB
             }
 
             return 0xFF; //memoryReadBAD
+        }
+
+        public void SaveState()
+        {
+			IFormatter formatter = new BinaryFormatter();
+			Stream stream = new FileStream("/tmp/state", FileMode.Create, FileAccess.Write, FileShare.None);
+			formatter.Serialize(stream, this);
+			stream.Close();
         }
     }
 }

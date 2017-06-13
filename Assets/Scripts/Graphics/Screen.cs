@@ -5,15 +5,21 @@
  * Copyright(C) 2005-2009 Bjorn Carlin
  */
 
+using System;
 using UnityEngine;
 
 namespace GB.Graphics
 {
+    [Serializable]
     public class Screen
     {
+        [NonSerialized]
         private Core core;
 
-        private long[] colors = new long[] { 0x80EFFFDE, 0x80ADD794, 0x80529273, 0x80183442 };
+		[NonSerialized]
+		private Drawer drawer;
+
+        private readonly long[] colors = new long[] { 0x80EFFFDE, 0x80ADD794, 0x80529273, 0x80183442 };
 
         private long[] palette;
 
@@ -72,8 +78,6 @@ namespace GB.Graphics
         public bool gfxSpriteShow;
 
         private bool colorEnabled = false;
-
-        private Drawer drawer;
 
         public Screen(Core core, Drawer drawer)
         {
