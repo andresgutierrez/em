@@ -163,13 +163,35 @@ namespace GB
                     cBATT = true;
                     MBCType = "MBC3 + SRAM + BATT";
                     break;
+                case 0x1B:
+                    cMBC5 = true;
+                    cSRAM = true;
+                    cBATT = true;
+                    MBCType = "MBC5 + SRAM + BATT";
+					break;
             }
 
             long numROMBanks = ROMBanks[rom[0x148]];
 
             Debug.Log("Cartridge Type=" + MBCType);
             Debug.Log("Memory RAM=" + RAMBanks[rom[0x149]]);
-            Debug.Log("GBC Mode=" + rom[0x143]);
+
+			switch (rom[0x143]) {
+                case 0x00: 
+                    cGBC = false;				
+				    break;
+                case 0x80: 
+                    cGBC = !Settings.priorizeGameBoyMode;				
+				    break;
+                case 0xC0:
+                    cGBC = true;			
+				    break;
+				default:
+                    cGBC = false;
+                    break;
+			}
+
+            Debug.Log("GBC Mode=" + rom[0x143] + " " + cGBC);
 
             inBootstrap = false;
             memory.InitRAM();
