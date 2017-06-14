@@ -698,8 +698,8 @@ namespace GB
                     }
                 }
 
-				if (core.cSRAM)
-					return SRAM[address - 0xA000];
+                if (core.cSRAM)
+                    return SRAM[address - 0xA000];
             }
 
             if (address >= 0xC000 && address < 0xE000)
@@ -813,18 +813,18 @@ namespace GB
 
             data = new byte[MBCRam.Length];
 
-			for (int i = 0; i < MBCRam.Length; i++)
-				data[i] = (byte)MBCRam[i];
+            for (int i = 0; i < MBCRam.Length; i++)
+                data[i] = (byte)MBCRam[i];
 
             PlayerPrefs.SetString("MBCRAM-" + core.name, Convert.ToBase64String(data));
 
             Debug.Log("Saved MBCRAM + SRAM");
         }
 
-		public void LoadSRAM()
-		{
-			if (!core.cSRAM)
-				return;
+        public void LoadSRAM()
+        {
+            if (!core.cSRAM)
+                return;
 
             string base64data = PlayerPrefs.GetString("SRAM-" + core.name, "");
 
@@ -838,18 +838,18 @@ namespace GB
             for (int i = 0; i < data.Length; i++)
                 SRAM[i] = data[i];
 
-			base64data = PlayerPrefs.GetString("MBCRAM-" + core.name, "");
+            base64data = PlayerPrefs.GetString("MBCRAM-" + core.name, "");
 
-			if (string.IsNullOrEmpty(base64data))
-				return;
+            if (string.IsNullOrEmpty(base64data))
+                return;
 
-			data = Convert.FromBase64String(base64data);
+            data = Convert.FromBase64String(base64data);
 
-			for (int i = 0; i < data.Length; i++)
+            for (int i = 0; i < data.Length; i++)
                 MBCRam[i] = data[i];
 
             Debug.Log("Restored MBCRAM + SRAM");
-		}
+        }
 
         public void SaveState()
         {

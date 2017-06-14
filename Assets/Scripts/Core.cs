@@ -200,13 +200,13 @@ namespace GB
                     cBATT = true;
                     MBCType = "MBC3 + TIMER + BATT";
                     break;
-				case 0x10:
+                case 0x10:
                     cMBC3 = true;
                     cTIMER = true;
                     cBATT = true;
                     cSRAM = true;
                     MBCType = "MBC3 + TIMER + BATT + SRAM";
-					break;
+                    break;
                 case 0x13:
                     cMBC3 = true;
                     cSRAM = true;

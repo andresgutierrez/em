@@ -562,75 +562,75 @@ namespace GB.Graphics
                 gbcPalette[address >> 1] &= 0x00FFFFFF;
         }
 
-		public void PerformHDMA()
-		{
+        public void PerformHDMA()
+        {
             Memory memory = core.memory;
-            
-			core.CPUTicks += 1 + (8 * core.multiplier);
 
-			long dmaSrc = (memory.memory[0xFF51] << 8) + memory.memory[0xFF52];
-			long dmaDstRelative = (memory.memory[0xFF53] << 8) + memory.memory[0xFF54];
-			long dmaDstFinal = dmaDstRelative + 0x10;
+            core.CPUTicks += 1 + (8 * core.multiplier);
+
+            long dmaSrc = (memory.memory[0xFF51] << 8) + memory.memory[0xFF52];
+            long dmaDstRelative = (memory.memory[0xFF53] << 8) + memory.memory[0xFF54];
+            long dmaDstFinal = dmaDstRelative + 0x10;
             long tileRelative = tileData.Length - tileCount;
 
-			if (memory.currVRAMBank == 1)
-			{
-				while (dmaDstRelative < dmaDstFinal)
-				{					
-					if (dmaDstRelative < 0x1800)
-					{
-						long tileIndex = (dmaDstRelative >> 4) + 384;
-						if (tileReadState[tileIndex] == 1)
-						{
-							long r = tileRelative + tileIndex;
-							do
-							{
-								tileData[r].initialized = false;
-								r -= tileCount;
-							} while (r >= 0);
-							tileReadState[tileIndex] = 0;
-						}
-					}
-					core.VRAM[dmaDstRelative++] = memory.Read(dmaSrc++);
-				}
-			}
-			else
-			{
-				while (dmaDstRelative < dmaDstFinal)
-				{
-					// Bkg Tile data area
-					if (dmaDstRelative < 0x1800)
-					{
-						long tileIndex = dmaDstRelative >> 4;
-						if (tileReadState[tileIndex] == 1)
-						{
-							long r = tileRelative + tileIndex;
-							do
-							{
+            if (memory.currVRAMBank == 1)
+            {
+                while (dmaDstRelative < dmaDstFinal)
+                {
+                    if (dmaDstRelative < 0x1800)
+                    {
+                        long tileIndex = (dmaDstRelative >> 4) + 384;
+                        if (tileReadState[tileIndex] == 1)
+                        {
+                            long r = tileRelative + tileIndex;
+                            do
+                            {
                                 tileData[r].initialized = false;
-								r -= tileCount;
-							} while (r >= 0);
-							tileReadState[tileIndex] = 0;
-						}
-					}
-					memory.memory[0x8000 + dmaDstRelative++] = memory.Read(dmaSrc++);
-				}
-			}
+                                r -= tileCount;
+                            } while (r >= 0);
+                            tileReadState[tileIndex] = 0;
+                        }
+                    }
+                    core.VRAM[dmaDstRelative++] = memory.Read(dmaSrc++);
+                }
+            }
+            else
+            {
+                while (dmaDstRelative < dmaDstFinal)
+                {
+                    // Bkg Tile data area
+                    if (dmaDstRelative < 0x1800)
+                    {
+                        long tileIndex = dmaDstRelative >> 4;
+                        if (tileReadState[tileIndex] == 1)
+                        {
+                            long r = tileRelative + tileIndex;
+                            do
+                            {
+                                tileData[r].initialized = false;
+                                r -= tileCount;
+                            } while (r >= 0);
+                            tileReadState[tileIndex] = 0;
+                        }
+                    }
+                    memory.memory[0x8000 + dmaDstRelative++] = memory.Read(dmaSrc++);
+                }
+            }
 
-			memory.memory[0xFF51] = (dmaSrc & 0xFF00) >> 8;
-			memory.memory[0xFF52] = dmaSrc & 0x00F0;
-			memory.memory[0xFF53] = ((dmaDstFinal & 0x1F00) >> 8);
-			memory.memory[0xFF54] = dmaDstFinal & 0x00F0;
+            memory.memory[0xFF51] = (dmaSrc & 0xFF00) >> 8;
+            memory.memory[0xFF52] = dmaSrc & 0x00F0;
+            memory.memory[0xFF53] = ((dmaDstFinal & 0x1F00) >> 8);
+            memory.memory[0xFF54] = dmaDstFinal & 0x00F0;
 
-			if (memory.memory[0xFF55] == 0)
-			{
-				core.hdmaRunning = false;
-				memory.memory[0xFF55] = 0xFF;
-			}
-			else
-			{
-				--memory.memory[0xFF55];
-			}
-		}
+            if (memory.memory[0xFF55] == 0)
+            {
+                core.hdmaRunning = false;
+                memory.memory[0xFF55] = 0xFF;
+            }
+            else
+            {
+                --memory.memory[0xFF55];
+            }
+        }
     }
 }

@@ -115,12 +115,12 @@ namespace GB
 
                 case 0x08:
                     if (data < 60)
-                        RTCSeconds = data;                    
+                        RTCSeconds = data;
                     break;
 
                 case 0x09:
                     if (data < 60)
-                        RTCMinutes = data;					
+                        RTCMinutes = data;
                     break;
 
                 case 0x0A:
@@ -141,7 +141,7 @@ namespace GB
         }
 
         public long GetTime(long currMBCRAMBank, long currMBCRAMBankPosition, long address)
-        {            
+        {
             switch (currMBCRAMBank)
             {
                 case 0x00:

@@ -63,8 +63,8 @@ namespace GB
 
         private void SaveSRAM()
         {
-			if (core.initialized)
-				core.memory.SaveSRAM();
+            if (core.initialized)
+                core.memory.SaveSRAM();
         }
 
         private void OnApplicationQuit()
