@@ -120,14 +120,109 @@ namespace GB
         {
             currentROMBank = (long)Mathf.Max(ROMBank1offs - 1, 0) * 0x4000;
             while (currentROMBank + 0x4000 >= rom.Length)
-                currentROMBank -= (long)rom.Length;
+                currentROMBank -= rom.Length;
         }
 
         private void SetCurrentMBC5ROMBank()
         {
             currentROMBank = (ROMBank1offs - 1) * 0x4000;
             while (currentROMBank + 0x4000 >= rom.Length)
-                currentROMBank -= (long)rom.Length;
+                currentROMBank -= rom.Length;
+        }
+
+        private void SetupMBC1(long address, long data)
+        {
+            if (address < 0x2000)
+                MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
+            else if (address < 0x4000)
+            {
+                ROMBank1offs = (ROMBank1offs & 0x60) | (data & 0x1F);
+                SetCurrentMBC1ROMBank();
+            }
+            else if (address < 0x6000)
+            {
+                if (MBC1Mode)
+                {
+                    //4/32 Mode
+                    currMBCRAMBank = data & 0x3;
+                    currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
+                }
+                else
+                {
+                    //16/8 Mode
+                    ROMBank1offs = ((data & 0x03) << 5) | (ROMBank1offs & 0x1F);
+                    SetCurrentMBC1ROMBank();
+                }
+            }
+            else
+            {
+                //MBC1WriteType
+                //MBC1 mode setting:
+                MBC1Mode = ((data & 0x1) == 0x1);
+            }
+        }
+
+        private void SetupMBC2(long address, long data)
+        {
+            if (address < 0x1000)
+                MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
+            else if (address >= 0x2100 && address < 0x2200)
+            {
+                ROMBank1offs = data & 0x0F;
+                SetCurrentMBC2AND3ROMBank();
+            }
+        }
+
+        private void SetupMBC3(long address, long data)
+        {
+            if (address < 0x2000)
+                MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
+            else if (address < 0x4000)
+            {
+                ROMBank1offs = data & 0x7F;
+                SetCurrentMBC2AND3ROMBank();
+            }
+            else if (address < 0x6000)
+            {
+                currMBCRAMBank = data;
+                if (data < 4)
+                    currMBCRAMBankPosition = ((int)currMBCRAMBank << 13) - 0xA000;
+            }
+            else
+            {
+                core.clock.CheckLatched(data);
+            }
+        }
+
+        private void SetupMBC5(long address, long data)
+        {
+            if (address < 0x2000)
+            {
+                MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
+            }
+            else if (address < 0x3000)
+            {
+                ROMBank1offs = (ROMBank1offs & 0x100) | data;
+                SetCurrentMBC5ROMBank();
+            }
+            else if (address < 0x4000)
+            {
+                ROMBank1offs = ((data & 0x01) << 8) | (ROMBank1offs & 0xFF);
+                SetCurrentMBC5ROMBank();
+            }
+            else if (address < 0x6000)
+            {
+                if (core.cRUMBLE)
+                {
+                    currMBCRAMBank = data & 0x3;
+                    currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
+                }
+                else
+                {                    
+                    currMBCRAMBank = data & 0xF;
+                    currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
+                }
+            }
         }
 
         public void Write(long address, long data)
@@ -136,101 +231,19 @@ namespace GB
             {
                 if (core.cMBC1)
                 {
-                    if (address < 0x2000)
-                        MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
-                    else if (address < 0x4000)
-                    {
-                        ROMBank1offs = (ROMBank1offs & 0x60) | (data & 0x1F);
-                        SetCurrentMBC1ROMBank();
-                    }
-                    else if (address < 0x6000)
-                    {
-                        if (MBC1Mode)
-                        {
-                            //4/32 Mode
-                            currMBCRAMBank = data & 0x3;
-                            currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
-                        }
-                        else
-                        {
-                            //16/8 Mode
-                            ROMBank1offs = ((data & 0x03) << 5) | (ROMBank1offs & 0x1F);
-                            SetCurrentMBC1ROMBank();
-                        }
-                    }
-                    else
-                    {
-                        //MBC1WriteType
-                        //MBC1 mode setting:
-                        MBC1Mode = ((data & 0x1) == 0x1);
-                    }
+                    SetupMBC1(address, data);
                 }
                 else if (core.cMBC2)
                 {
-                    if (address < 0x1000) // cMBC2 mode
-                    {
-                        //MBC RAM Bank Enable/Disable:
-                        MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A); //If lower nibble is 0x0A, then enable, otherwise disable.
-                    }
-                    else if (address >= 0x2100 && address < 0x2200)
-                    {
-                        ROMBank1offs = data & 0x0F;
-                        SetCurrentMBC2AND3ROMBank();
-                    }
+                    SetupMBC2(address, data);
                 }
                 else if (core.cMBC3)
                 {
-                    if (address < 0x2000)
-                    {
-                        MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A); //If lower nibble is 0x0A, then enable, otherwise disable.
-                    }
-                    else if (address < 0x4000)
-                    {
-                        ROMBank1offs = data & 0x7F;
-                        SetCurrentMBC2AND3ROMBank();
-                    }
-                    else if (address < 0x6000)
-                    {
-                        //MBC3WriteRAMBank
-                        currMBCRAMBank = data;
-                        if (data < 4) //MBC3 RAM bank switching                     
-                            currMBCRAMBankPosition = ((int)currMBCRAMBank << 13) - 0xA000;
-                    }
-                    else
-                    {
-                        core.clock.CheckLatched(data);
-                    }
+                    SetupMBC3(address, data);
                 }
                 else if (core.cMBC5 || core.cRUMBLE)
                 {
-					if (address < 0x2000)
-					{
-						MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
-					}
-					else if (address < 0x3000)
-					{
-						ROMBank1offs = (ROMBank1offs & 0x100) | data;
-						SetCurrentMBC5ROMBank();
-					}
-					else if (address < 0x4000)
-					{
-						ROMBank1offs = ((data & 0x01) << 8) | (ROMBank1offs & 0xFF);
-						SetCurrentMBC5ROMBank();
-					}
-					else if (address < 0x6000)
-					{
-						if (core.cRUMBLE)
-						{
-							currMBCRAMBank = data & 0x3;
-							currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
-						}
-						else
-						{
-							//MBC5 RAM bank switching
-							currMBCRAMBank = data & 0xF;
-							currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
-						}
-					}
+                    SetupMBC5(address, data);
                 }
                 else if (core.cHuC3)
                 {
@@ -751,10 +764,10 @@ namespace GB
 
         public void SaveState()
         {
-			IFormatter formatter = new BinaryFormatter();
-			Stream stream = new FileStream("/tmp/state", FileMode.Create, FileAccess.Write, FileShare.None);
-			formatter.Serialize(stream, this);
-			stream.Close();
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream("/tmp/state", FileMode.Create, FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream, this);
+            stream.Close();
         }
     }
 }

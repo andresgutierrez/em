@@ -88,9 +88,9 @@ namespace GB
         public Keyboard keyboard;
 
         public Core(TextAsset asset, Drawer drawer)
-        {            
+        {
             cpu = new CPU(this);
-			memory = new Memory(this, asset.bytes);
+            memory = new Memory(this, asset.bytes);
             clock = new Clock(this);
             screen = new Screen(this, drawer);
             lcd = new Lcd(this);
@@ -120,24 +120,59 @@ namespace GB
 
         private void CheckROM(byte[] rom)
         {
-			name = "";
-			for (int address = 0x134; address < 0x13F; address++)
-			{
-				if (rom[address] > 0)
-					name += Convert.ToChar(rom[address]);
-			}
+            name = "";
+            for (int address = 0x134; address < 0x13F; address++)
+            {
+                if (rom[address] > 0)
+                    name += Convert.ToChar(rom[address]);
+            }
 
-			gameCode = "";
-			for (int address = 0x13F; address < 0x143; address++)
-			{
-				if (rom[address] > 0)
-					gameCode += Convert.ToChar(rom[address]);
-			}
+            gameCode = "";
+            for (int address = 0x13F; address < 0x143; address++)
+            {
+                if (rom[address] > 0)
+                    gameCode += Convert.ToChar(rom[address]);
+            }
 
             cartridgeType = rom[0x147];
 
             Debug.Log(name + " " + gameCode.Length + " " + cartridgeType);
 
+            string MBCType = SetCartridgeFlags();
+
+            long numROMBanks = ROMBanks[rom[0x148]];
+
+            Debug.Log("Cartridge Type=" + MBCType);
+            Debug.Log("Memory RAM=" + RAMBanks[rom[0x149]]);
+
+            switch (rom[0x143])
+            {
+                case 0x00:
+                    cGBC = false;
+                    break;
+                case 0x80:
+                    cGBC = !Settings.priorizeGameBoyMode;
+                    break;
+                case 0xC0:
+                    cGBC = true;
+                    break;
+                default:
+                    cGBC = false;
+                    break;
+            }
+
+            Debug.Log("GBC Mode=" + rom[0x143] + " " + cGBC);
+
+            inBootstrap = false;
+            memory.InitRAM();
+            screen.InitScreen();
+            InitSkipBootstrap();
+
+            screen.CheckPaletteType();
+        }
+
+        private string SetCartridgeFlags()
+        {
             string MBCType = "";
 
             switch (cartridgeType)
@@ -147,16 +182,16 @@ namespace GB
                     MBCType = "MBC1";
                     break;
                 case 0x03:
-					cMBC1 = true;
+                    cMBC1 = true;
                     cSRAM = true;
                     cBATT = true;
-					MBCType = "MBC1 + SRAM + BATT";
-					break;
+                    MBCType = "MBC1 + SRAM + BATT";
+                    break;
                 case 0x06:
-					cMBC2 = true;
+                    cMBC2 = true;
                     cBATT = true;
-					MBCType = "MBC2 + BATT";
-					break;
+                    MBCType = "MBC2 + BATT";
+                    break;
                 case 0x13:
                     cMBC3 = true;
                     cSRAM = true;
@@ -168,41 +203,14 @@ namespace GB
                     cSRAM = true;
                     cBATT = true;
                     MBCType = "MBC5 + SRAM + BATT";
-					break;
+                    break;
             }
 
-            long numROMBanks = ROMBanks[rom[0x148]];
-
-            Debug.Log("Cartridge Type=" + MBCType);
-            Debug.Log("Memory RAM=" + RAMBanks[rom[0x149]]);
-
-			switch (rom[0x143]) {
-                case 0x00: 
-                    cGBC = false;				
-				    break;
-                case 0x80: 
-                    cGBC = !Settings.priorizeGameBoyMode;				
-				    break;
-                case 0xC0:
-                    cGBC = true;			
-				    break;
-				default:
-                    cGBC = false;
-                    break;
-			}
-
-            Debug.Log("GBC Mode=" + rom[0x143] + " " + cGBC);
-
-            inBootstrap = false;
-            memory.InitRAM();
-            screen.InitScreen();
-            InitSkipBootstrap();
-
-            screen.CheckPaletteType();
+            return MBCType;
         }
-       
+
         private void InitSkipBootstrap()
-        {            
+        {
             IME = true;
             LCDTicks = 15;
             DIVTicks = 14;
