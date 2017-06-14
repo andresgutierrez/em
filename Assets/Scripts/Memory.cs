@@ -203,8 +203,34 @@ namespace GB
                 }
                 else if (core.cMBC5 || core.cRUMBLE)
                 {
-                    // cMBC5 || cRUMBLE mode
-                    Debug.Log("not implemented");
+					if (address < 0x2000)
+					{
+						MBCRAMBanksEnabled = ((data & 0x0F) == 0x0A);
+					}
+					else if (address < 0x3000)
+					{
+						ROMBank1offs = (ROMBank1offs & 0x100) | data;
+						SetCurrentMBC5ROMBank();
+					}
+					else if (address < 0x4000)
+					{
+						ROMBank1offs = ((data & 0x01) << 8) | (ROMBank1offs & 0xFF);
+						SetCurrentMBC5ROMBank();
+					}
+					else if (address < 0x6000)
+					{
+						if (core.cRUMBLE)
+						{
+							currMBCRAMBank = data & 0x3;
+							currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
+						}
+						else
+						{
+							//MBC5 RAM bank switching
+							currMBCRAMBank = data & 0xF;
+							currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
+						}
+					}
                 }
                 else if (core.cHuC3)
                 {
