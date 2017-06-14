@@ -25,6 +25,6 @@ namespace GB
 
         public static bool overrideMBC = true;
 
-        public static bool priorizeGameBoyMode = true;
+        public static bool priorizeGameBoyMode = false;
     }
 }

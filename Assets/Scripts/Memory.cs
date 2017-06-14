@@ -20,6 +20,8 @@ namespace GB
 
         private long[] GBCMemory;
 
+        private long[] SRAM;
+
         private long currentROMBank;
 
         private long ROMBank1offs;
@@ -32,7 +34,7 @@ namespace GB
 
         private long currMBCRAMBankPosition = -0xA000;
 
-        private long currVRAMBank;
+        public long currVRAMBank;
 
         private bool MBC1Mode;
 
@@ -51,6 +53,7 @@ namespace GB
         public void InitMemory()
         {
             memory = new long[0x10000];
+            SRAM = new long[0xBFFF - 0xA000 + 1];
         }
 
         public void InitRAM()
@@ -72,6 +75,8 @@ namespace GB
                 core.VRAM = new long[0x2000];
                 GBCMemory = new long[0x7000];
             }
+
+            LoadSRAM();
         }
 
         public byte[] LoadROM()
@@ -218,7 +223,7 @@ namespace GB
                     currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
                 }
                 else
-                {                    
+                {
                     currMBCRAMBank = data & 0xF;
                     currMBCRAMBankPosition = (currMBCRAMBank << 13) - 0xA000;
                 }
@@ -266,8 +271,11 @@ namespace GB
                         core.VRAM[address - 0x8000] = data;
                 }
             }
-            else if (address < 0xC000)
+            else if (address < 0xC000) // External RAM
             {
+                if (core.cSRAM)
+                    SRAM[address - 0xA000] = data;
+
                 if ((numRAMBanks == 1 / 16 && address < 0xA200) || numRAMBanks >= 1)
                 {
                     if (!core.cMBC3)
@@ -519,13 +527,22 @@ namespace GB
                 {
                     if (!core.hdmaRunning)
                     {
-                        if ((data & 0x80) == 0)
+                        if ((data & 0x80) == 0) //DMA
                         {
-                            Debug.Log("not implemented");
+                            core.CPUTicks += 1 + ((8 * ((data & 0x7F) + 1)) * core.multiplier);
+                            long dmaSrc = (memory[0xFF51] << 8) + memory[0xFF52];
+                            long dmaDst = 0x8000 + (memory[0xFF53] << 8) + memory[0xFF54];
+                            long endAmount = (((data & 0x7F) * 0x10) + 0x10);
+                            for (long loopAmount = 0; loopAmount < endAmount; ++loopAmount)
+                                Write(dmaDst++, Read(dmaSrc++));
+                            memory[0xFF51] = (dmaSrc & 0xFF00) >> 8;
+                            memory[0xFF52] = dmaSrc & 0x00F0;
+                            memory[0xFF53] = (dmaDst & 0x1F00) >> 8;
+                            memory[0xFF54] = dmaDst & 0x00F0;
+                            memory[0xFF55] = 0xFF;
                         }
-                        else
+                        else //H-Blank DMA
                         {
-                            //H-Blank DMA
                             if (data > 0x80)
                             {
                                 core.hdmaRunning = true;
@@ -564,7 +581,17 @@ namespace GB
             {
                 if (core.cGBC)
                 {
-                    Debug.Log("not implemented");
+                    core.screen.SetGBCPalette(memory[0xFF68] & 0x3F, data);
+                    if (Utils.Usbtsb(memory[0xFF68]) < 0)
+                    {
+                        long next = ((Utils.Usbtsb(memory[0xFF68]) + 1) & 0x3F);
+                        memory[0xFF68] = (next | 0x80);
+                        memory[0xFF69] = 0xFF & core.screen.gbcRawPalette[next];
+                    }
+                    else
+                    {
+                        memory[0xFF69] = data;
+                    }
                 }
                 else
                 {
@@ -584,7 +611,19 @@ namespace GB
             else if (address == 0xFF6B)
             {
                 if (core.cGBC)
-                    Debug.Log("not implemented");
+                {
+                    core.screen.SetGBCPalette((memory[0xFF6A] & 0x3F) + 0x40, data);
+                    if (Utils.Usbtsb(memory[0xFF6A]) < 0)
+                    {
+                        long next = ((memory[0xFF6A] + 1) & 0x3F);
+                        memory[0xFF6A] = (next | 0x80);
+                        memory[0xFF6B] = 0xFF & core.screen.gbcRawPalette[next | 0x40];
+                    }
+                    else
+                    {
+                        memory[0xFF6B] = data;
+                    }
+                }
                 else
                     memory[0xFF6B] = data;
             }
@@ -630,15 +669,15 @@ namespace GB
             if (address < 0x8000)
                 return rom[currentROMBank + address];
 
-            if (address >= 0x8000 && address < 0xA000)
+            if (address >= 0x8000 && address < 0xA000) // Character RAM
             {
                 if (core.cGBC)
-                    return (core.lcd.modeSTAT > 2) ? 0xFF : ((currVRAMBank == 0) ? memory[address] : core.VRAM[address - 0x8000]);
+                    return core.lcd.modeSTAT > 2 ? 0xFF : ((currVRAMBank == 0) ? memory[address] : core.VRAM[address - 0x8000]);
 
-                return (core.lcd.modeSTAT > 2) ? 0xFF : memory[address];
+                return core.lcd.modeSTAT > 2 ? 0xFF : memory[address];
             }
 
-            if (address >= 0xA000 && address < 0xC000)
+            if (address >= 0xA000 && address < 0xC000) // External (cartridge) RAM
             {
                 if ((numRAMBanks == 1 / 16 && address < 0xA200) || numRAMBanks >= 1)
                 {
@@ -650,19 +689,17 @@ namespace GB
                         //cout("Reading from disabled RAM.", 1);
                         return 0xFF;
                     }
-                    else
-                    {
-                        if (MBCRAMBanksEnabled || Settings.overrideMBC)
-                            return core.clock.GetTime(currMBCRAMBank, currMBCRAMBankPosition, address);
 
-                        //cout("Reading from invalid or disabled RAM.", 1);
-                        return 0xFF;
+                    if (MBCRAMBanksEnabled || Settings.overrideMBC)
+                    {
+                        long data = core.clock.GetTime(currMBCRAMBank, currMBCRAMBankPosition, address);
+                        if (core.cSRAM && data == 0xFF)
+                            return SRAM[address - 0xA000];
                     }
                 }
-                else
-                {
-                    return 0xFF;
-                }
+
+				if (core.cSRAM)
+					return SRAM[address - 0xA000];
             }
 
             if (address >= 0xC000 && address < 0xE000)
@@ -761,6 +798,58 @@ namespace GB
 
             return 0xFF; //memoryReadBAD
         }
+
+        public void SaveSRAM()
+        {
+            if (!core.cSRAM)
+                return;
+
+            byte[] data = new byte[SRAM.Length];
+
+            for (int i = 0; i < SRAM.Length; i++)
+                data[i] = (byte)SRAM[i];
+
+            PlayerPrefs.SetString("SRAM-" + core.name, Convert.ToBase64String(data));
+
+            data = new byte[MBCRam.Length];
+
+			for (int i = 0; i < MBCRam.Length; i++)
+				data[i] = (byte)MBCRam[i];
+
+            PlayerPrefs.SetString("MBCRAM-" + core.name, Convert.ToBase64String(data));
+
+            Debug.Log("Saved MBCRAM + SRAM");
+        }
+
+		public void LoadSRAM()
+		{
+			if (!core.cSRAM)
+				return;
+
+            string base64data = PlayerPrefs.GetString("SRAM-" + core.name, "");
+
+            if (string.IsNullOrEmpty(base64data))
+                return;
+
+            byte[] data = Convert.FromBase64String(base64data);
+
+            SRAM = new long[data.Length];
+
+            for (int i = 0; i < data.Length; i++)
+                SRAM[i] = data[i];
+
+			base64data = PlayerPrefs.GetString("MBCRAM-" + core.name, "");
+
+			if (string.IsNullOrEmpty(base64data))
+				return;
+
+			data = Convert.FromBase64String(base64data);
+
+			for (int i = 0; i < data.Length; i++)
+                MBCRam[i] = data[i];
+
+            Debug.Log("Restored MBCRAM + SRAM");
+		}
 
         public void SaveState()
         {

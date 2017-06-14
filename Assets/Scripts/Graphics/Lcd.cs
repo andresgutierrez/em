@@ -95,10 +95,8 @@ namespace GB.Graphics
                         if (STATTracker != 2)
                         {
                             if (core.hdmaRunning && !core.halt && LCDisOn)
-                            {
-                                //core.performHdma(); 
-                                Debug.Log("not implemented"); //H-Blank DMA
-                            }
+                                core.screen.PerformHDMA();
+                            
                             if (mode0TriggerSTAT)
                                 memory.memory[0xFF0F] |= 0x2; // set IF bit 1                            
                         }
@@ -133,10 +131,7 @@ namespace GB.Graphics
                         if (STATTracker != 2)
                         {
                             if (core.hdmaRunning && !core.halt && LCDisOn)
-                            {
-                                //core.performHdma(); //H-Blank DMA
-                                Debug.Log("not implemented");
-                            }
+                                core.screen.PerformHDMA();                            
 
                             if (mode0TriggerSTAT)
                                 memory.memory[0xFF0F] |= 0x2; // set IF bit 1                            
@@ -196,10 +191,7 @@ namespace GB.Graphics
             if (modeSTAT != 0)
             {
                 if (core.hdmaRunning && !core.halt && LCDisOn)
-                {
-                    //this.performHdma(); //H-Blank DMA
-                    Debug.Log("not implemented");
-                }
+                    core.screen.PerformHDMA();
 
                 if (mode0TriggerSTAT || (mode2TriggerSTAT && STATTracker == 0))
                     memory.memory[0xFF0F] |= 0x2; // if STAT bit 3 . set IF bit1  

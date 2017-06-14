@@ -36,7 +36,13 @@ namespace GB
 
         private bool enabled;
 
-        public long lastIteration;
+        public float lastIteration;
+
+        public bool Enabled
+        {
+            get { return enabled; }
+            set { enabled = value; }
+        }
 
         public Clock(Core core, bool enabled = false)
         {
@@ -48,31 +54,16 @@ namespace GB
         {
             if (Settings.autoFrameskip || enabled)
             {
-                long timeElapsed = ((int)Time.time) - lastIteration;
+                float currentTime = Time.time;
+                float timeElapsed = currentTime - lastIteration;
+
                 if (enabled && !RTCHALT)
                 {
-                    RTCSeconds += timeElapsed;
-
-                    while (RTCSeconds >= 60)
-                    {
-                        RTCSeconds -= 60;
-                        ++RTCMinutes;
-                        if (RTCMinutes >= 60)
-                        {
-                            RTCMinutes -= 60;
-                            ++RTCHours;
-                            if (RTCHours >= 24)
-                            {
-                                RTCHours -= 24;
-                                ++RTCDays;
-                                if (RTCDays >= 512)
-                                {
-                                    RTCDays -= 512;
-                                    RTCDayOverFlow = true;
-                                }
-                            }
-                        }
-                    }
+                    DateTime now = DateTime.Now;
+                    RTCSeconds = now.Second;
+                    RTCHours = now.Hour;
+                    RTCMinutes = now.Minute;
+                    RTCDays = now.DayOfYear;
                 }
 
                 if (Settings.autoFrameskip)
@@ -88,7 +79,7 @@ namespace GB
                     }
                 }
 
-                lastIteration = (int)Time.time;
+                lastIteration = Time.time;
             }
         }
 
@@ -103,7 +94,7 @@ namespace GB
             if (!RTCisLatched)
             {
                 RTCisLatched = true;
-                latchedSeconds = (long)Mathf.Floor(RTCSeconds);
+                latchedSeconds = RTCSeconds;
                 latchedMinutes = RTCMinutes;
                 latchedHours = RTCHours;
                 latchedLDays = RTCDays & 0xFF;
@@ -124,12 +115,12 @@ namespace GB
 
                 case 0x08:
                     if (data < 60)
-                        RTCSeconds = data;
+                        RTCSeconds = data;                    
                     break;
 
                 case 0x09:
                     if (data < 60)
-                        RTCMinutes = data;
+                        RTCMinutes = data;					
                     break;
 
                 case 0x0A:
@@ -150,7 +141,7 @@ namespace GB
         }
 
         public long GetTime(long currMBCRAMBank, long currMBCRAMBankPosition, long address)
-        {
+        {            
             switch (currMBCRAMBank)
             {
                 case 0x00:
@@ -169,6 +160,7 @@ namespace GB
                 case 0x0C:
                     return (((RTCDayOverFlow) ? 0x80 : 0) + ((RTCHALT) ? 0x40 : 0)) + latchedHDays;
             }
+
             return 0xFF; //memoryReadBAD
         }
     }

@@ -16,8 +16,8 @@ namespace GB.Graphics
         [NonSerialized]
         private Core core;
 
-		[NonSerialized]
-		private Drawer drawer;
+        [NonSerialized]
+        private Drawer drawer;
 
         private readonly long[] colors = new long[] { 0x80EFFFDE, 0x80ADD794, 0x80529273, 0x80183442 };
 
@@ -55,9 +55,9 @@ namespace GB.Graphics
 
         private long[] gbColorizedPalette;
 
-        public int[] gbcRawPalette;
+        public long[] gbcRawPalette;
 
-        private int[] gbcPalette;
+        private long[] gbcPalette;
 
         public long drewBlank;
 
@@ -137,13 +137,13 @@ namespace GB.Graphics
 
         public void InitScreen()
         {
-			if (core.cGBC)
-			{
-				tileCount *= 2;
-				tileCountInvalidator = tileCount * 4;
-				colorCount = 64;
-				transparentCutoff = 32;
-			}
+            if (core.cGBC)
+            {
+                tileCount *= 2;
+                tileCountInvalidator = tileCount * 4;
+                colorCount = 64;
+                transparentCutoff = 32;
+            }
 
             tileData = new TileData[tileCount * colorCount];
             for (int i = 0; i < tileData.Length; i++)
@@ -160,11 +160,11 @@ namespace GB.Graphics
 
             gbPalette = new long[12];
             gbColorizedPalette = new long[12];
-            gbcRawPalette = new int[0x80];
+            gbcRawPalette = new long[0x80];
             for (int i = 0; i < gbcRawPalette.Length; i++)
                 gbcRawPalette[i] = -1000;
 
-            gbcPalette = new int[64];
+            gbcPalette = new long[64];
             gbcPalette[0] = 0x40;
 
             long address = 0x3F;
@@ -368,7 +368,7 @@ namespace GB.Graphics
                                     DrawPartBgSprite((tileNum & -2) + (offset >> 3), spriteX, line, offset & 7, spriteAttrib);
                             }
                             else
-                                DrawPartBgSprite(tileNum, spriteX, line, offset, spriteAttrib);                            
+                                DrawPartBgSprite(tileNum, spriteX, line, offset, spriteAttrib);
                         }
                         else
                         {
@@ -381,7 +381,7 @@ namespace GB.Graphics
                                     DrawPartFgSprite((tileNum & -2) + (offset >> 3), spriteX, line, offset & 7, spriteAttrib);
                             }
                             else
-                                DrawPartFgSprite(tileNum, spriteX, line, offset, spriteAttrib);                            
+                                DrawPartFgSprite(tileNum, spriteX, line, offset, spriteAttrib);
                         }
                     }
                     else
@@ -519,7 +519,10 @@ namespace GB.Graphics
 
         public void CheckPaletteType()
         {
-            palette = Settings.colorize ? gbColorizedPalette : gbPalette;
+            if (core.cGBC)
+                palette = gbcPalette;
+            else
+                palette = Settings.colorize ? gbColorizedPalette : gbPalette;
         }
 
         public void ChangeTileDataArea(long address, long currVRAMBank)
@@ -536,5 +539,98 @@ namespace GB.Graphics
                 tileReadState[tileIndex] = 0;
             }
         }
+
+        public void SetGBCPalettePre(long address, long data)
+        {
+            if (gbcRawPalette[address] == data)
+                return;
+
+            gbcRawPalette[address] = data;
+            if (address >= 0x40 && (address & 0x6) == 0)
+                return;
+
+            long value = (gbcRawPalette[address | 1] << 8) + gbcRawPalette[address & -2];
+            gbcPalette[address >> 1] = 0x80000000 + ((value & 0x1F) << 19) + ((value & 0x3E0) << 6) + ((value & 0x7C00) >> 7);
+
+            InvalidateAll(address >> 3);
+        }
+
+        public void SetGBCPalette(long address, long data)
+        {
+            SetGBCPalettePre(address, data);
+            if ((address & 0x6) == 0)
+                gbcPalette[address >> 1] &= 0x00FFFFFF;
+        }
+
+		public void PerformHDMA()
+		{
+            Memory memory = core.memory;
+            
+			core.CPUTicks += 1 + (8 * core.multiplier);
+
+			long dmaSrc = (memory.memory[0xFF51] << 8) + memory.memory[0xFF52];
+			long dmaDstRelative = (memory.memory[0xFF53] << 8) + memory.memory[0xFF54];
+			long dmaDstFinal = dmaDstRelative + 0x10;
+            long tileRelative = tileData.Length - tileCount;
+
+			if (memory.currVRAMBank == 1)
+			{
+				while (dmaDstRelative < dmaDstFinal)
+				{					
+					if (dmaDstRelative < 0x1800)
+					{
+						long tileIndex = (dmaDstRelative >> 4) + 384;
+						if (tileReadState[tileIndex] == 1)
+						{
+							long r = tileRelative + tileIndex;
+							do
+							{
+								tileData[r].initialized = false;
+								r -= tileCount;
+							} while (r >= 0);
+							tileReadState[tileIndex] = 0;
+						}
+					}
+					core.VRAM[dmaDstRelative++] = memory.Read(dmaSrc++);
+				}
+			}
+			else
+			{
+				while (dmaDstRelative < dmaDstFinal)
+				{
+					// Bkg Tile data area
+					if (dmaDstRelative < 0x1800)
+					{
+						long tileIndex = dmaDstRelative >> 4;
+						if (tileReadState[tileIndex] == 1)
+						{
+							long r = tileRelative + tileIndex;
+							do
+							{
+                                tileData[r].initialized = false;
+								r -= tileCount;
+							} while (r >= 0);
+							tileReadState[tileIndex] = 0;
+						}
+					}
+					memory.memory[0x8000 + dmaDstRelative++] = memory.Read(dmaSrc++);
+				}
+			}
+
+			memory.memory[0xFF51] = (dmaSrc & 0xFF00) >> 8;
+			memory.memory[0xFF52] = dmaSrc & 0x00F0;
+			memory.memory[0xFF53] = ((dmaDstFinal & 0x1F00) >> 8);
+			memory.memory[0xFF54] = dmaDstFinal & 0x00F0;
+
+			if (memory.memory[0xFF55] == 0)
+			{
+				core.hdmaRunning = false;
+				memory.memory[0xFF55] = 0xFF;
+			}
+			else
+			{
+				--memory.memory[0xFF55];
+			}
+		}
     }
 }

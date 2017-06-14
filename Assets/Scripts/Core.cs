@@ -39,6 +39,8 @@ namespace GB
 
         public bool cRUMBLE;
 
+        public bool cTIMER;
+
         public bool IME = true;
 
         public bool cGBC;
@@ -192,6 +194,19 @@ namespace GB
                     cBATT = true;
                     MBCType = "MBC2 + BATT";
                     break;
+                case 0x0F:
+                    cMBC3 = true;
+                    cTIMER = true;
+                    cBATT = true;
+                    MBCType = "MBC3 + TIMER + BATT";
+                    break;
+				case 0x10:
+                    cMBC3 = true;
+                    cTIMER = true;
+                    cBATT = true;
+                    cSRAM = true;
+                    MBCType = "MBC3 + TIMER + BATT + SRAM";
+					break;
                 case 0x13:
                     cMBC3 = true;
                     cSRAM = true;
@@ -205,6 +220,9 @@ namespace GB
                     MBCType = "MBC5 + SRAM + BATT";
                     break;
             }
+
+            if (cTIMER)
+                clock.Enabled = true;
 
             return MBCType;
         }

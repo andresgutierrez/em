@@ -33,7 +33,11 @@ namespace GB
         public void Load(string path)
         {
             if (core != null)
+            {
+                SaveSRAM();
                 core.initialized = false;
+            }
+
             core = new Core(Resources.Load(path) as TextAsset, drawer);
             core.Start();
         }
@@ -55,6 +59,17 @@ namespace GB
                 }
 #endif
             }
+        }
+
+        private void SaveSRAM()
+        {
+			if (core.initialized)
+				core.memory.SaveSRAM();
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveSRAM();
         }
     }
 }
