@@ -25,10 +25,15 @@ CPU instruction set accuracy test results ([Blargg's cpu_instrs.gb](http://gbdev
 
 - [x] Support Game Boy Classic ROMs
 - [x] Keyboard/Mobile Controls
-- [ ] Support Game Boy Color ROMs
+- [x] Support Game Boy Color ROMs
+- [x] MBCRAM/SRAM memory is persisted between sessions
 - [ ] Improve UI
 - [ ] Sound
 - [ ] Save/Restore state
+
+## Known Issues
+
+GBC emulation have some minor graphic glitches
 
 ## Credits
 
